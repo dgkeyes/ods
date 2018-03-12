@@ -1,0 +1,259 @@
+---
+title: "ODS final report analyses"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r load stuff, echo = FALSE}
+#### Load data ####
+load(".rdata")
+
+#### Packages ####
+
+library('tidyverse')
+library('stringr')
+library('ggmap')
+library('ggplot2')
+library('maps')
+```
+
+# By district
+```{r echo = FALSE}
+
+
+ods.participation.by.district <- schools.data %>%
+  group_by(District) %>%
+  count(Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year.) %>%
+  set_names(c("District", "response", "number")) %>%
+  filter(response == "No" | response == "Yes") %>%
+  mutate(pct = round(prop.table(number), digits = 2)) %>%
+  filter(response == "Yes")
+
+ggplot(ods.participation.by.district, aes(x = reorder(District, pct), y = pct)) +
+  geom_bar(stat = "identity") +
+  coord_flip() 
+
+
+
+```
+
+# By ESD
+```{r echo = FALSE}
+ods.participation.by.esd <- schools.data %>%
+  group_by(ESD) %>%
+  count(Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year.) %>%
+  set_names(c("ESD", "response", "number")) %>%
+  filter(response == "No" | response == "Yes") %>%
+  mutate(pct = round(prop.table(number), digits = 2)) %>%
+  filter(!is.na(ESD)) %>%
+  filter(ESD != "Oregon Department of Education")
+
+# ods.participation.by.esd$ESD <- factor(ods.participation.by.esd, levels = as.character(ods.participation.by.esd$ESD))
+
+ggplot(ods.participation.by.esd, aes(x = reorder(ESD, number), y = number, fill = response)) +
+  geom_bar(stat = "identity") +
+  # geom_text(data = filter(ods.participation.by.esd, response == "Yes"),
+  #           label = filter(ods.participation.by.esd, response == "Yes")$pct) +
+  coord_flip() 
+
+```
+
+# By county 
+```{r echo = FALSE}
+oregon.map <- map_data("county")
+
+oregon.map <- oregon.map %>%
+  filter(region == "oregon")
+
+ods.participation.by.county <- schools.data %>%
+  group_by(County) %>%
+  count(Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year.) %>%
+  set_names(c("County", "response", "number")) %>%
+  filter(response == "No" | response == "Yes") %>%
+  mutate(pct = round(prop.table(number), digits = 2)) %>%
+  filter(!is.na(County)) %>%
+  filter(response == "Yes")
+  
+ods.participation.by.county$pct.text <- cut(ods.participation.by.county$pct, breaks = seq(0,1, by = .25),
+                                  labels = c("0 - 25 percent", 
+                                             "25 - 50 percent",
+                                             "50 - 75 percent",
+                                             "75 - 100 percent"))
+
+ods.participation.by.county$County <- str_to_lower(ods.participation.by.county$County)
+
+ods.participation.by.county <- left_join(ods.participation.by.county, oregon.map, by = c("County" = "subregion"))
+
+ggplot(ods.participation.by.county, aes(x=long, y=lat, group=group, fill = factor(pct.text))) +
+  geom_polygon(color = "#a9a9a9") +
+  scale_fill_manual(values = c("blue", "red", "green", "purple")) 
+
+
+```
+
+# Public vs private
+
+```{r echo = FALSE}
+public.vs.private <- schools.data %>%
+  group_by(Governance) %>%
+  count(Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year.) %>%
+    set_names(c("Governance", "response", "number")) %>%
+   filter(response == "No" | response == "Yes") %>%
+  filter(Governance != "") %>%
+  mutate(pct = round(prop.table(number), digits = 2)) 
+    # filter(response == "Yes")
+  
+ggplot(public.vs.private, aes(x = Governance, y = pct, fill = response)) +
+  geom_bar(stat = "identity") +
+  geom_text(label = public.vs.private$pct) +
+  coord_flip() 
+
+```
+
+
+# Percent white
+
+```{r echo = FALSE}
+# whiteness <- schools.data %>%
+#   group_by(white.quartile) %>%
+#   count(Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year.) %>%
+#   set_names(c("white.quartile", "response", "number")) %>%
+#   filter(response == "No" | response == "Yes") %>%
+#   mutate(pct = round(prop.table(number), digits = 2)) %>%
+#   filter(response == "Yes") 
+#   
+#   
+# ggplot(whiteness, aes(x = white.quartile, y = pct)) +
+#   geom_bar(stat = "identity") +
+#   geom_text(label = whiteness$pct) +
+#   coord_flip() 
+
+```
+
+# Test scores
+```{r echo = FALSE}
+
+test.scores.totals <- schools.data %>%
+  select(one_of(c("ela.quartile", "math.quartile", "science.quartile"))) %>%
+  gather() %>%
+  group_by(key) %>%
+  count(value) %>%
+  filter(!is.na(value))
+
+
+  test.scores <- schools.data %>%
+    select(one_of(c("ela.quartile", "math.quartile", "science.quartile", "Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year."))) %>%
+    gather(Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year.) %>%
+    set_names(c("ods_participation", "test_type", "school_test_scores")) %>%
+    group_by(ods_participation, test_type) %>%
+    count(school_test_scores) %>%
+    filter(ods_participation == "Yes") %>%
+    filter(!is.na(school_test_scores)) %>%
+    bind_cols(test.scores.totals) %>%
+    select(-(key:value)) %>%
+    mutate(pct = round(n / n1, digits = 2)) %>%
+    set_names(c("ods_participation", "test_type", "school_test_scores", "number_who_did_ods", "number_total", "pct")) 
+   
+rm(test.scores.totals)
+
+ggplot(test.scores, aes (x = school_test_scores, y = pct)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~test_type) 
+  
+
+```
+
+# Days/nights
+
+```{r echo = FALSE}
+
+days.nights <- schools.data %>%
+  select(How.many.DAYS.does.your.Outdoor.School.program.last.:How.many.NIGHTS.does.your.Outdoor.School.program.last.) %>%
+  gather() %>%
+  group_by(key) %>%
+  count(value) %>%
+  filter(!is.na(value)) %>%
+  set_names(c("days_nights", "length", "number"))
+
+days.nights$length <- as.character(days.nights$length)
+days.nights$days_nights <- str_replace(days.nights$days_nights, "How.many.DAYS.does.your.Outdoor.School.program.last.", "Days")
+days.nights$days_nights <- str_replace(days.nights$days_nights, "How.many.NIGHTS.does.your.Outdoor.School.program.last.", "Nights")
+  
+ggplot(days.nights, aes(x = length, y = number)) +
+  geom_histogram(stat = "identity") +
+  facet_wrap(~days_nights)
+  
+```
+
+
+# Who develops curriculum
+
+```{r echo = FALSE}
+
+curriculum.developer <- schools.data %>%
+  select(curriculum.outside.provider:curriculum.volunteers) %>%
+  gather() %>%
+  group_by(key) %>%
+  count(value) %>%
+  filter(!is.na(value)) %>%
+  mutate(pct = round(prop.table(n), digits = 2)) %>%
+  filter(value != FALSE) %>%
+  # filter(key != "staffing.other") %>%
+  select(-value) %>%
+  set_names(c("curriculum_developer", "number", "pct"))
+
+ggplot(curriculum.developer, aes(x = curriculum_developer, y = pct)) +
+  geom_bar(stat = "identity") +
+  coord_flip()
+  
+
+```
+
+# Who staffs programs
+
+```{r echo = FALSE}
+
+staffing <- schools.data %>%
+  select(contains("staffing")) %>%
+  gather() %>%
+  group_by(key) %>%
+  count(value) %>%
+  filter(!is.na(value)) %>%
+  mutate(pct = round(prop.table(n), digits = 2)) %>%
+  filter(value != FALSE) %>%
+  filter(key != "staffing.other") %>%
+  select(-value) %>%
+  set_names(c("staffer", "number", "pct"))
+
+ggplot(staffing, aes(x = staffer, y = pct)) +
+  geom_bar(stat = "identity") +
+  coord_flip()
+
+```
+
+# Familiarity with Measure 99 
+
+```{r echo = FALSE}
+
+m99.familiarity <- schools.data %>%
+  count(How.familiar..if.at.all..are.you.with.Measure.99..which.passed.in.November.2016.and.dedicates.funding.to.schools.to.send.students.to.Outdoor.School.) %>%
+  set_names(c("response", "number")) %>%
+  filter(response != "" & response != "x") %>%
+  
+  mutate(pct = round(number / sum(number), digits = 2))
+
+
+
+
+```
+
+```{r}
+gdoc_render(filename = "ODS final report analyses.Rmd")
+rmarkdown::render()
+```
+
+

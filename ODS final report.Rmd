@@ -1,0 +1,81 @@
+---
+title: "ODS final report"
+output: html_document
+---
+
+```{r packages, include=FALSE}
+library('tidyverse')
+library('stringr')
+library('ggmap')
+library('ggplot2')
+library('maps')
+library('scales')
+library('splitstackshape')
+library('ggrepel')
+library('markdrive')
+```
+
+```{r, include = FALSE}
+
+
+```
+
+
+
+
+```{r data, include=FALSE}
+load(".rdata")
+```
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Schools that do ODS
+
+## How many schools do ODS?
+
+```{r participation general}
+ods.participation <- schools.data %>%
+  select(one_of(c("School.Name", "Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year."))) %>%
+  set_names(c("school", "participation")) %>%
+  count(participation) %>%
+  filter(participation == "No" | participation == "Yes") %>%
+  set_names(c("response", "number"))
+
+ods.participation$response <- c("DID NOT participate", "DID participate")
+
+ggplot(ods.participation, aes(x = response, y = number, fill = factor(response))) +
+  geom_bar(stat = "identity") +
+  geom_text(label = ods.participation$number,
+            hjust = 1.5, 
+            color = "white") + 
+  scale_fill_manual(values = c(ods.gray, ods.green)) +
+  # scale_color_manual(values = c(ods.gray, ods.green)) +
+  coord_flip() +
+  ods.bar.theme
+```
+
+## How many students and how many grades?
+
+
+```{r number of students, include = FALSE}
+number.of.students. <- schools.data %>%
+  select(one_of("ods.total.students", "ods.students.in.fifth.or.sixth"))
+  
+
+```
+
+
+## Program length
+## Where do they go for ODS?
+## Accommodations
+## Curriculum development
+## Staffing
+
+
+
+
+

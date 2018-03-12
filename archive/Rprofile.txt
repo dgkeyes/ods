@@ -1,0 +1,7 @@
+# Install packages
+
+require('ggmap')
+require('ggplot2')
+require("dplyr")
+require("tidyr")
+require ("ggthemes")

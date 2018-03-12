@@ -1,0 +1,124 @@
+body {
+  font-family: "Roboto";
+}
+
+
+h1 {
+  margin-top: 20px;
+}
+
+
+.section-title h1 {
+   margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+font-family: Roboto-Bold;
+letter-spacing: -0.34px;
+text-shadow: 0 1px 1px rgba(0,0,0,0.50);
+}
+
+
+blockquote {
+  font-family: "PT Serif";
+  font-size: 2rem;
+
+}
+
+a {
+  color: #004c97;
+}
+
+.ods-blue {
+  color: #000;
+}
+
+.ods-red {
+  color: #000;
+}
+
+.ods-green {
+  color: #000;
+}
+
+.ods-white {
+  color: #ffffff;
+}
+
+.title-page {
+    background-image:url('pics/kid-in-river.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.kids-on-bridge {
+    background-image:url('pics/kids-on-bridge.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.kids-with-binoculars {
+    background-image:url('pics/kids-with-binoculars.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.kid-kneeling {
+    background-image:url('pics/kid-kneeling.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.streamable {
+    background-image:url('pics/streamable.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.kids-on-beach {
+    background-image:url('pics/kids-on-beach.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.camps {
+    background-image:url('pics/marmot-cabin.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.successful-programs {
+    background-image:url('pics/lunch.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.successful-programs {
+    background-image:url('pics/wallowa.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.smiling-kid {
+    background-image:url('pics/smiling-kid.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.conclusion {
+    background-image:url('pics/kids-raising-hands.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.quote-page {
+    background-image:url('pics/quote-page.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+
+.quote-page h1 {
+  display: none;
+}

@@ -1,0 +1,121 @@
+---
+title: "ODS interactive map"
+# runtime: shiny
+output: html_document
+---
+  
+  
+  ```{r packages, include = FALSE}
+library('tidyverse')
+library('stringr')
+library('ggmap')
+library('ggplot2')
+library('shiny')
+library('maps')
+library('leaflet')
+```
+
+```{r load data, include = FALSE}
+load("../.RData")
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Map
+
+```{r ODS map, echo=FALSE}
+
+schools.data.for.map <- schools.data %>%
+  filter(Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year. == "Yes" |
+           Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year. == "No") %>%
+  select(one_of(c("School.Name", 
+                  "Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year.", 
+                  "District",
+                  "ESD",
+                  "Governance",
+                  "ods.fifth.grade",
+                  "ods.sixth.grade",
+                  "ods.students.in.fifth.or.sixth",
+                  # "How.many.students.from.your.school.participated.in.Outdoor.School.in.the.2016.2017.school.year.",
+                  "Which.camp.or.camps.did.students.at.your.school.attend.for.Outdoor.School.in.the.2016.2017.school.year.",
+                  "How.many.DAYS.does.your.Outdoor.School.program.last.",
+                  "How.many.NIGHTS.does.your.Outdoor.School.program.last.",
+                  "Does.your.Outdoor.School.program.have.an.academic.component.",
+                  "To.what.degree.are.you.able.to.make.accommodations.to.ensure.that.the.Outdoor.School.program.is.accessible.for.all.students.",
+                  "lon", 
+                  "lat"))) %>%
+  set_names(c("school", 
+              "participation", 
+              "district",
+              "esd",
+              "governance",
+              "ods.fifth.grade",
+              "ods.sixth.grade",
+              "number.of.students",
+              "camp.attended",
+              "days",
+              "nights",
+              "academic.component",
+              "accommodations",
+              "lon", 
+              "lat"))
+
+school.icon <- awesomeIcons(
+  icon = 'fa-university',
+  iconColor = ods.blue,
+  library = 'fa',
+  markerColor = 'white'
+)
+
+school.icons <- icons(
+  iconUrl = ifelse(schools.data.for.map$participation == "Yes",
+                   "../icons/school-blue.png",
+                   "../icons/school-red.png")
+)
+
+camp.icon <- icons(
+  iconUrl = "icons/camp.png"
+)
+
+school.popup.text <- paste("<strong>", schools.data.for.map$school, "</strong>",
+                           "<br/>",
+                           "District: ", schools.data.for.map$district,
+                           "<br/>",
+                           "2016-2017 outdoor school participation: ", schools.data.for.map$participation,
+                           "<br/>",
+                           "Camp(s) attended: ", schools.data.for.map$camp.attended,
+                           "<br/>",
+                           "Number of days: ", schools.data.for.map$days,
+                           "<br/>",
+                           "Number of nights: ", schools.data.for.map$nights,
+                           "<br/>",
+                           "Academic component: ", schools.data.for.map$academic.component,
+                           sep = "")
+
+    leaflet() %>%
+      addProviderTiles(providers$CartoDB.Positron) %>%
+      addMarkers(lng=schools.data.for.map$lon, 
+                 lat=schools.data.for.map$lat, 
+                 icon = school.icons,
+                 popup = school.popup.text) %>%
+      addMarkers(lng=schools.data.for.map$lon, 
+                 lat=schools.data.for.map$lat, 
+                 icon = school.icons,
+                 popup = school.popup.text) %>%
+      addMarkers(lng=schools.data.for.map$lon, 
+                 lat=schools.data.for.map$lat, 
+                 icon = school.icons,
+                 popup = school.popup.text) %>%
+      clearBounds()
+    
+  
+
+
+ 
+
+
+
+```
