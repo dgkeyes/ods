@@ -1,3 +1,37 @@
+
+
+
+
+# Plot routes from camps to school -------------------------------------------------------------
+
+library(ggmap)
+library(tidyverse)
+library(maps)
+
+schools.to.camps.route <- camps 
+
+temp <- route("Portland, OR 97211",
+              "Yellow Springs, OH 45387",
+              structure = "route")
+
+
+us.map <- map_data("state") 
+
+ggplot(temp, aes(x = lon, y = lat, group = 1)) +
+  geom_polygon(data = us.map, 
+               aes(x=long, y=lat, group=group),
+               color = ods.gray,
+               fill = ods.light.gray) +
+  geom_line() +
+  coord_map()
+
+
+temp <- route(schools.to.camps.route$camp[1], 
+              schools.to.camps.route$school[1], 
+              structure = "route")
+  
+str(schools.to.camps.route$camp)
+
 #### Plot camps and associated schools ####
 
 
