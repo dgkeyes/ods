@@ -14,8 +14,8 @@ library(janitor)
 schools.data.for.map <- schools.data %>%
   filter(Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year. == "Yes" |
            Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year. == "No") %>%
-  select(one_of(c("School.Name", 
-                  "Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year.", 
+  select(one_of(c("School.Name",
+                  "Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year.",
                   "District",
                   "ESD",
                   "Governance",
@@ -29,10 +29,10 @@ schools.data.for.map <- schools.data %>%
                   "Does.your.Outdoor.School.program.have.an.academic.component.",
                   "To.what.degree.are.you.able.to.make.accommodations.to.ensure.that.the.Outdoor.School.program.is.accessible.for.all.students.",
                   "FRL",
-                  "lon", 
+                  "lon",
                   "lat"))) %>%
-  set_names(c("school", 
-              "participation", 
+  set_names(c("school",
+              "participation",
               "district",
               "esd",
               "governance",
@@ -45,14 +45,14 @@ schools.data.for.map <- schools.data %>%
               "academic.component",
               "accommodations",
               "frl",
-              "lon", 
+              "lon",
               "lat"))
 
 
 
 # LEAFLET -----------------------------------------------------------------
 
-
+# load(".RData")
 
 
 school.icon <- awesomeIcons(
@@ -102,14 +102,14 @@ schools.data.for.map.participated.no <- schools.data.for.map %>%
 
 leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
-  addMarkers(lng=schools.data.for.map.participated.yes$lon, 
-             lat=schools.data.for.map.participated.yes$lat, 
+  addMarkers(lng=schools.data.for.map.participated.yes$lon,
+             lat=schools.data.for.map.participated.yes$lat,
              icon = school.icon.blue,
              popup = school.popup.text,
              # clusterOptions = markerClusterOptions(),
              group = "Participated in Outdoor School") %>%
-  addMarkers(lng=schools.data.for.map.participated.no$lon, 
-             lat=schools.data.for.map.participated.no$lat, 
+  addMarkers(lng=schools.data.for.map.participated.no$lon,
+             lat=schools.data.for.map.participated.no$lat,
              icon = school.icon.red,
              popup = school.popup.text,
              # clusterOptions = markerClusterOptions(),
@@ -129,8 +129,8 @@ htmlwidgets::saveWidget(frameableWidget(ods.leaflet.map),'leaflet.html')
 
 
 schools.data.for.map.v2 <- schools.data %>%
-  select(one_of(c("School.Name", 
-                  "Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year.", 
+  select(one_of(c("School.Name",
+                  "Did.your.school.participate.in.Outdoor.School.in.the.2016.2017.school.year.",
                   "Sister.school",
                   "District",
                   "ESD",
@@ -145,10 +145,10 @@ schools.data.for.map.v2 <- schools.data %>%
                   "Does.your.Outdoor.School.program.have.an.academic.component.",
                   "To.what.degree.are.you.able.to.make.accommodations.to.ensure.that.the.Outdoor.School.program.is.accessible.for.all.students.",
                   "FRL",
-                  "lon", 
+                  "lon",
                   "lat"))) %>%
-  set_names(c("school", 
-              "participation", 
+  set_names(c("school",
+              "participation",
               "sister.schools",
               "district",
               "esd",
@@ -162,19 +162,19 @@ schools.data.for.map.v2 <- schools.data %>%
               "academic.component",
               "accommodations",
               "frl",
-              "lon", 
+              "lon",
               "lat")) %>%
-  filter(participation == "Yes" | 
-           participation == "No" | 
-           participation == "Sister school did" | 
+  filter(participation == "Participated" |
+           participation == "Did not participate" |
+           participation == "Sister school participated" |
            is.na(participation)) %>%
   mutate(participation = str_replace_na(participation, "No info")) %>%
-  mutate(participation = factor(participation, levels = c("Yes", "No", "Sister school did", "No info"))) %>%
+  mutate(participation = factor(participation, levels = c("Participated", "Did not participate", "Sister school participated", "No info"))) %>%
   mutate(mapcolor = participation) %>%
-  mutate(mapcolor = str_replace(mapcolor, "Yes", "#004C97")) %>%
+  mutate(mapcolor = str_replace(mapcolor, "Participated", "#004C97")) %>%
   mutate(mapcolor = str_replace(mapcolor, "No info", "#A9A9A9")) %>%
-  mutate(mapcolor = str_replace(mapcolor, "No", "#AF1E2D")) %>%
-  mutate(mapcolor = str_replace(mapcolor, "Sister school did", "#DD8500"))
+  mutate(mapcolor = str_replace(mapcolor, "Did not participate", "#AF1E2D")) %>%
+  mutate(mapcolor = str_replace(mapcolor, "Sister school participated", "#DD8500"))
 
 
 
@@ -184,16 +184,16 @@ schools.data.for.map.v2 <- schools.data %>%
 
 
 
-map.filters <- c("Yes", "No", "Sister school did", "No info")
+map.filters <- c("Participated", "Did not participate", "Sister school participated", "No info"))) %>%
 
 map = leaflet() %>%
-  addProviderTiles(providers$CartoDB.Positron) 
+  addProviderTiles(providers$CartoDB.Positron)
 
 for (i in 4:1) {
   temp = filter(schools.data.for.map.v2, participation == map.filters[i])
-  
-  
-  
+
+
+
   school.popup.text <- paste("<strong>", temp$school, "</strong>",
                              "<br/>",
                              "District: ", temp$district,
@@ -210,10 +210,10 @@ for (i in 4:1) {
                              "<br/>",
                              "Academic Component: ", temp$academic.component,
                              sep = "")
-  
+
   map = map %>%
-    addCircleMarkers(lng=temp$lon, 
-                     lat=temp$lat, 
+    addCircleMarkers(lng=temp$lon,
+                     lat=temp$lat,
                      color = temp$mapcolor,
                      fill = temp$mapcolor,
                      stroke = temp$mapcolor,
@@ -223,7 +223,7 @@ for (i in 4:1) {
                      options = list(zIndex = i * -1))
 }
 
-ods.map.all <- map %>% 
+ods.map.all <- map %>%
   addLayersControl(overlayGroups = map.filters,
                    options = layersControlOptions(collapsed = F)) %>%
   clearBounds()
@@ -248,14 +248,14 @@ esd.list <- unique(schools.data$ESD) %>%
 
 
 map = leaflet() %>%
-  addProviderTiles(providers$CartoDB.Positron) 
+  addProviderTiles(providers$CartoDB.Positron)
 
-dk_ods_map <- function (esd_name){  
+dk_ods_map <- function (esd_name){
   for (j in 4:1) {
     temp <- filter(ods.esd.map.data, participation == map.filters[j])
-    
-    
-    
+
+
+
     school.popup.text <- paste("<strong>", temp$school, "</strong>",
                                "<br/>",
                                "District: ", temp$district,
@@ -272,10 +272,10 @@ dk_ods_map <- function (esd_name){
                                "<br/>",
                                "Academic Component: ", temp$academic.component,
                                sep = "")
-    
+
     map = map %>%
-      addCircleMarkers(lng=temp$lon, 
-                       lat=temp$lat, 
+      addCircleMarkers(lng=temp$lon,
+                       lat=temp$lat,
                        color = temp$mapcolor,
                        fill = temp$mapcolor,
                        stroke = temp$mapcolor,
@@ -284,29 +284,29 @@ dk_ods_map <- function (esd_name){
                        group = map.filters[j],
                        options = list(zIndex = j * -1))
   }
-  
-  ods.map.by.esd <- map %>% 
+
+  ods.map.by.esd <- map %>%
     addLayersControl(overlayGroups = map.filters,
                      options = layersControlOptions(collapsed = F)) %>%
     clearBounds()
-  
-  
-  saveWidget(frameableWidget(ods.map.by.esd), paste(str_replace_all(str_to_lower(esd_name), " ", "-"), 
-                                                    ".html", 
+
+
+  saveWidget(frameableWidget(ods.map.by.esd), paste(str_replace_all(str_to_lower(esd_name), " ", "-"),
+                                                    ".html",
                                                     sep = ""))
 }
 
 for (i in 1:length(esd.list$ESD)) {
   ods.esd.map.data <- schools.data.for.map.v2 %>%
     filter(esd == esd.list$ESD[i])
-  
+
   dk_ods_map(esd.list$ESD[i])
 }
-  
-  
-  
-  
-  
-  
 
 
+library(usethis)
+proj_set()
+usethis::use_rstudio()
+usethis::use_git()
+usethis::use_github()
+use_git_config(user.name = "dgkeyes", user.email = "dgkeyes@gmail.com")
