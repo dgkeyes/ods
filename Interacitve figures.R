@@ -241,25 +241,18 @@ map.filters <- c("Participated", "Did not participate", "Sister school participa
                            options = layersControlOptions(collapsed = F)) %>%
           clearBounds()
 
-     # setwd("maps")
+     setwd("maps")
      saveWidget(frameableWidget(ods.map.all), "all-schools.html")
 
 
 
-<<<<<<< HEAD
+
 # MAP BY ESD --------------------------------------------------------------
 
      ods.esd.map.data <- schools.data.for.map.v2
 
 
      map.filters <- c("Participated", "Did not participate", "Sister school participated", "No info")
-
-=======
-     # MAP BY ESD --------------------------------------------------------------
-
-
-     map.filters <- c("Yes", "No", "Sister school did", "No info")
->>>>>>> 69987282e66310fefa8ab4c2296eb08dd1779488
 
 
      esd.list <- unique(schools.data$ESD) %>%
@@ -269,11 +262,6 @@ map.filters <- c("Participated", "Did not participate", "Sister school participa
           arrange(ESD)
 
 
-
-     map = leaflet() %>%
-          addProviderTiles(providers$CartoDB.Positron)
-
-<<<<<<< HEAD
 
                school.popup.text <- paste("<strong>", temp$school, "</strong>",
                                           "<br/>",
@@ -323,6 +311,7 @@ map.filters <- c("Participated", "Did not participate", "Sister school participa
                                           "<br/>",
                                           "Academic Component: ", temp$academic.component,
                                           sep = "")
+
 
                map = map %>%
                     addCircleMarkers(lng=temp$lon,
