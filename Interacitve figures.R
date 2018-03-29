@@ -52,7 +52,11 @@ schools.data.for.map <- schools.data %>%
 
 # LEAFLET -----------------------------------------------------------------
 
+<<<<<<< HEAD
 # load(".RData")
+=======
+.load(".RData")
+>>>>>>> 5ef48186f1ab1758745f7e4efcaae6e5fffafd56
 
 
 school.icon <- awesomeIcons(
