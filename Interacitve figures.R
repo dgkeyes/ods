@@ -247,6 +247,7 @@ map.filters <- c("Participated", "Did not participate", "Sister school participa
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # MAP BY ESD --------------------------------------------------------------
 
      ods.esd.map.data <- schools.data.for.map.v2
@@ -255,10 +256,15 @@ map.filters <- c("Participated", "Did not participate", "Sister school participa
      map.filters <- c("Participated", "Did not participate", "Sister school participated", "No info")
 
 =======
+=======
+>>>>>>> 69987282e66310fefa8ab4c2296eb08dd1779488
      # MAP BY ESD --------------------------------------------------------------
 
 
      map.filters <- c("Yes", "No", "Sister school did", "No info")
+<<<<<<< HEAD
+>>>>>>> 69987282e66310fefa8ab4c2296eb08dd1779488
+=======
 >>>>>>> 69987282e66310fefa8ab4c2296eb08dd1779488
 
 
@@ -268,11 +274,23 @@ map.filters <- c("Participated", "Did not participate", "Sister school participa
           filter(ESD != "Private" & ESD != "Oregon Department of Education") %>%
           arrange(ESD)
 
+<<<<<<< HEAD
+=======
 
 
      map = leaflet() %>%
           addProviderTiles(providers$CartoDB.Positron)
 
+     dk_ods_map <- function (esd_name){
+          for (j in 4:1) {
+               temp <- filter(ods.esd.map.data, participation == map.filters[j])
+>>>>>>> 69987282e66310fefa8ab4c2296eb08dd1779488
+
+
+     map = leaflet() %>%
+          addProviderTiles(providers$CartoDB.Positron)
+
+<<<<<<< HEAD
 <<<<<<< HEAD
 
                school.popup.text <- paste("<strong>", temp$school, "</strong>",
@@ -324,6 +342,25 @@ map.filters <- c("Participated", "Did not participate", "Sister school participa
                                           "Academic Component: ", temp$academic.component,
                                           sep = "")
 
+=======
+               school.popup.text <- paste("<strong>", temp$school, "</strong>",
+                                          "<br/>",
+                                          "District: ", temp$district,
+                                          "<br/>",
+                                          "2016-2017 Outdoor School Participation: ", temp$participation,
+                                          "<br/>",
+                                          "Sister School(s):", temp$sister.schools,
+                                          "<br/>",
+                                          "Camp(s) Attended: ", temp$camp.attended,
+                                          "<br/>",
+                                          "Number of Days: ", temp$days,
+                                          "<br/>",
+                                          "Number of Nights: ", temp$nights,
+                                          "<br/>",
+                                          "Academic Component: ", temp$academic.component,
+                                          sep = "")
+
+>>>>>>> 69987282e66310fefa8ab4c2296eb08dd1779488
                map = map %>%
                     addCircleMarkers(lng=temp$lon,
                                      lat=temp$lat,
@@ -354,3 +391,13 @@ map.filters <- c("Participated", "Did not participate", "Sister school participa
           dk_ods_map(esd.list$ESD[i])
      }
 
+<<<<<<< HEAD
+=======
+
+     library(usethis)
+     proj_set()
+     usethis::use_rstudio()
+     usethis::use_git()
+     usethis::use_github()
+     use_git_config(user.name = "dgkeyes", user.email = "dgkeyes@gmail.com")
+>>>>>>> 69987282e66310fefa8ab4c2296eb08dd1779488
