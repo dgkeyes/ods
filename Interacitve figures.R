@@ -52,16 +52,6 @@ schools.data.for.map <- schools.data %>%
 
 # LEAFLET -----------------------------------------------------------------
 
-<<<<<<< HEAD
-
-=======
-<<<<<<< HEAD
-# load(".RData")
-=======
-     .load(".RData")
->>>>>>> 5ef48186f1ab1758745f7e4efcaae6e5fffafd56
->>>>>>> 69987282e66310fefa8ab4c2296eb08dd1779488
-
 
 school.icon <- awesomeIcons(
      icon = 'fa-university',
@@ -246,7 +236,12 @@ map.filters <- c("Participated", "Did not participate", "Sister school participa
 
 
 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 25f2d17a17920acc0b8f4cb9e0ae3052cced988d
 # MAP BY ESD --------------------------------------------------------------
 
      ods.esd.map.data <- schools.data.for.map.v2
@@ -254,6 +249,21 @@ map.filters <- c("Participated", "Did not participate", "Sister school participa
 
      map.filters <- c("Participated", "Did not participate", "Sister school participated", "No info")
 
+<<<<<<< HEAD
+=======
+=======
+=======
+>>>>>>> 69987282e66310fefa8ab4c2296eb08dd1779488
+     # MAP BY ESD --------------------------------------------------------------
+
+
+     map.filters <- c("Yes", "No", "Sister school did", "No info")
+<<<<<<< HEAD
+>>>>>>> 69987282e66310fefa8ab4c2296eb08dd1779488
+=======
+>>>>>>> 69987282e66310fefa8ab4c2296eb08dd1779488
+
+>>>>>>> 25f2d17a17920acc0b8f4cb9e0ae3052cced988d
 
      esd.list <- unique(schools.data$ESD) %>%
           tibble() %>%
@@ -261,7 +271,27 @@ map.filters <- c("Participated", "Did not participate", "Sister school participa
           filter(ESD != "Private" & ESD != "Oregon Department of Education") %>%
           arrange(ESD)
 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+=======
+
+
+     map = leaflet() %>%
+          addProviderTiles(providers$CartoDB.Positron)
+
+     dk_ods_map <- function (esd_name){
+          for (j in 4:1) {
+               temp <- filter(ods.esd.map.data, participation == map.filters[j])
+>>>>>>> 69987282e66310fefa8ab4c2296eb08dd1779488
+
+
+     map = leaflet() %>%
+          addProviderTiles(providers$CartoDB.Positron)
+
+<<<<<<< HEAD
+<<<<<<< HEAD
 
                school.popup.text <- paste("<strong>", temp$school, "</strong>",
                                           "<br/>",
@@ -287,14 +317,25 @@ map.filters <- c("Participated", "Did not participate", "Sister school participa
      map = leaflet() %>%
           addProviderTiles(providers$CartoDB.Positron)
 
+
+               school.popup.text <- paste("<strong>", temp$school, "</strong>",
+                                          "<br/>",
+                                          "District: ", temp$district,
+                                          "<br/>",
+                                          "2016-2017 Outdoor School Participation: ", temp$participation,
+                                          "<br/>",
+                                          "Sister School(s):", temp$sister.schools,
+                                          "<br/>",
+                                          "Camp(s) Attended: ", temp$camp.attended,
+                                          "<br/>",
+                                          "Number of Days: ", temp$days,
+                                          "<br/>",
+                                          "Number of Nights: ", temp$nights,
+                                          "<br/>",
+                                          "Academic Component: ", temp$academic.component,
+                                          sep = "")
+
 =======
->>>>>>> 69987282e66310fefa8ab4c2296eb08dd1779488
-     dk_ods_map <- function (esd_name){
-          for (j in 4:1) {
-               temp <- filter(ods.esd.map.data, participation == map.filters[j])
-
-
-
                school.popup.text <- paste("<strong>", temp$school, "</strong>",
                                           "<br/>",
                                           "District: ", temp$district,
